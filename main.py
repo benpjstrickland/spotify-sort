@@ -11,6 +11,7 @@ load_dotenv() # Load .env for CLIENT_ID and CLIENT_SECRET
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
 
+<<<<<<< HEAD
 
 # Main Method
 def main():
@@ -19,6 +20,9 @@ def main():
 
 main()
 # Methods
+=======
+print(client_id, client_secret)
+>>>>>>> 134866fdc486064cddf2a8d1e14bc62c9b4afbbd
 
 def get_token(): 
     auth_string = client_id + ":" + client_secret
