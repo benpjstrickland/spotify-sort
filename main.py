@@ -15,7 +15,7 @@ load_dotenv() # Load .env for CLIENT_ID and CLIENT_SECRET
 # Variables
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
-redirect_uri = 'http://localhost:5000/callback'
+redirect_uri = 'http://127.0.0.1:5000'
 scope = 'playlist-read-private' # look for more scopes later
 
 cache_handler = FlaskSessionCacheHandler(session)
