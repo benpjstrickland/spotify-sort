@@ -9,13 +9,14 @@ from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import FlaskSessionCacheHandler
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(64)
 
 load_dotenv() # Load .env for CLIENT_ID and CLIENT_SECRET
 
 # Variables
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
-redirect_uri = 'http://127.0.0.1:5000'
+redirect_uri = 'http://localhost:5000/callback'
 scope = 'playlist-read-private' # look for more scopes later
 
 cache_handler = FlaskSessionCacheHandler(session)
@@ -60,5 +61,3 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# fix the redirect link, not working for some strange reason
