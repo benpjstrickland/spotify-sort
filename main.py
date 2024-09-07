@@ -9,7 +9,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import FlaskSessionCacheHandler
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(64)
+app.config['SECRET_KEY'] = os.urandom(64) # allows redirect after allowing permissions
 
 load_dotenv() # Load .env for CLIENT_ID and CLIENT_SECRET
 
@@ -17,7 +17,7 @@ load_dotenv() # Load .env for CLIENT_ID and CLIENT_SECRET
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
 redirect_uri = 'http://localhost:5000/callback'
-scope = 'playlist-read-private' # look for more scopes later
+scope = 'playlist-read-private', 'user-library-read', 'user-library-modify' # look for more scopes later
 
 cache_handler = FlaskSessionCacheHandler(session)
 sp_oauth = SpotifyOAuth(
@@ -37,13 +37,28 @@ def home():
         return redirect(auth_url)
     return redirect(url_for("get_playlists"))
 
+# callback method
 @app.route("/callback")
 def callback():
     sp_oauth.get_access_token(request.args["code"])
-    return redirect(url_for("get_playlists"))
+    return redirect(url_for("get_liked_songs"))
 
-@app.route("/get_playlists")
-def get_playlists():
+# use this later on current_user_saved_tracks() for getting liked songs and not playlists
+
+@app.route("/get_liked_songs") # not exactly working as intended
+def get_liked_songs():
+    if not sp_oauth.validate_token(cache_handler.get_cached_token()):
+        auth_url = sp_oauth.get_authorize_url()
+        return redirect(auth_url)
+    
+    liked_songs = sp.current_user_saved_tracks()
+    liked_songs_info = [(song["name"], song["external_urls"]["spotify"]) for song in liked_songs["items"]]
+    liked_songs_html = "<br>".join(f"{name}: {url}" for name, url in liked_songs_info)
+
+    return liked_songs_html
+
+#@app.route("/get_playlists") this function will display users saved playlists, reference later
+#def get_playlists():
     if not sp_oauth.validate_token(cache_handler.get_cached_token()):
         auth_url = sp_oauth.get_authorize_url()
         return redirect(auth_url)
