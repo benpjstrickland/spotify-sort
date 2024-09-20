@@ -2,4 +2,4 @@
 
 ### Creating a program with Spotify's API
 
-Currently in development
+Development halted for the time being
